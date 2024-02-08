@@ -33,6 +33,14 @@ class MainFragment : Fragment(), MenuProvider {
         menuInflater.inflate(R.menu.main_overflow_menu, menu)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.asteroid.observe(viewLifecycleOwner) { asteroids ->
+            asteroids.forEach {
+                println("** ${it.codename}")
+            }
+        }
+    }
+
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         println("*** on menu")
         return true
