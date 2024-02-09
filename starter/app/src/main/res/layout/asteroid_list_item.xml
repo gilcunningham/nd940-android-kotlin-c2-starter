@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="model"
+            type="com.udacity.asteroidradar.data.Asteroid" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:onClick="@{(v) -> clickListener.onClick(v)}">
+
+        <TextView
+            android:id="@+id/asteroid_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{model.codename}"
+            android:textAppearance="@style/listItemTextAppearance"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/asteroid_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{model.closeApproachDate}"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/asteroid_name" />
+
+        <ImageView
+            android:id="@+id/asteroid_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="TODO"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:statusIcon="@{model.potentiallyHazardous}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -52,7 +52,7 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
         Glide.with(imgView.context)
             .load(imgUri)
             .into(imgView)
-    } ?: imgView.setImageResource(R.drawable.loading_animation)
+    } // ?: imgView.setImageResource(R.drawable.loading_animation)
 }
 
 
