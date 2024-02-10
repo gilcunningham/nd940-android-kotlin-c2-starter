@@ -1,4 +1,4 @@
-package com.udacity.asteroidradar.main
+package com.udacity.asteroidradar.view
 
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.R
-import com.udacity.asteroidradar.data.Asteroid
+import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.databinding.AsteroidListItemBinding
 
 class AsteroidAdapter(private val listener: OnClickListener) :

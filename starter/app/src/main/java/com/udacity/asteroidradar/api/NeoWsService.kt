@@ -4,9 +4,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.Constants.BASE_URL
-import com.udacity.asteroidradar.api.entity.AsteroidListWrapper
-import com.udacity.asteroidradar.api.entity.PictureOfDayEntity
-import com.udacity.asteroidradar.data.Asteroid
+import com.udacity.asteroidradar.entity.AsteroidListWrapper
+import com.udacity.asteroidradar.entity.PictureOfDayEntity
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -70,16 +69,20 @@ class NeoWsService {
         }
     }
 
-    suspend fun <T : Any> serviceCall(
+    private suspend fun <T : Any> serviceCall(
         serviceDelegate: suspend () -> Response<T>
-    ): T? = withContext(Dispatchers.Default) {
+    ): T? = withContext(Dispatchers.IO) {
         _serviceStatus.emit(Status.LOADING)
-        serviceDelegate().apply {
-            _serviceStatus.emit(if (isSuccessful) Status.DONE else Status.ERROR)
-        }.body()
-        //    apply {
-        //    _serviceStatus.emit(if (isSuccessful) Status.DONE else Status.ERROR)
-        //}.body()
+        //try {
+            serviceDelegate().apply {
+                _serviceStatus.emit(if (isSuccessful) Status.DONE else Status.ERROR)
+            }.body()
+        //}
+        //catch (e: Exception) {
+        //    e.printStackTrace()
+        //    _serviceStatus.emit(Status.ERROR)
+        //}
+        //null
     }
 
     interface NeoWsApi {

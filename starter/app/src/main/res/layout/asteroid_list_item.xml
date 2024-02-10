@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="com.udacity.asteroidradar.data.Asteroid" />
+            type="com.udacity.asteroidradar.model.Asteroid" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
