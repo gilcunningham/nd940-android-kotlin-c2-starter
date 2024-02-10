@@ -28,7 +28,7 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:asteroidPictureOfDay="@{viewModel.pictureOfDay.url}"
+                app:pictureOfDay="@{viewModel.pictureOfDay.url}"
                 app:srcCompat="@drawable/loading_animation"/>
 
             <TextView

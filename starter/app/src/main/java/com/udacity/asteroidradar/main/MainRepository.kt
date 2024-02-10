@@ -4,29 +4,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.NeoWsService
-import com.udacity.asteroidradar.data.Asteroid
-import com.udacity.asteroidradar.data.PictureOfDay
+import com.udacity.asteroidradar.entity.asDomainModel
+import com.udacity.asteroidradar.model.Asteroid
+import com.udacity.asteroidradar.model.PictureOfDay
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class MainRepository {
+class MainRepository(private val database: AsteroidDatabase) {
 
-    private val _neoWsService = NeoWsService()
+    private val neoWsService = NeoWsService()
     private val _pictureOfDay = MutableLiveData<PictureOfDay>()
+    private val asteroidDao = database.asteroidDao()
 
     val pictureOfDay: LiveData<PictureOfDay> = _pictureOfDay
 
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroids : LiveData<List<Asteroid>> = _asteroids
+    val asteroids : LiveData<List<Asteroid>> = database.asteroidDao().getAsteroidListOrderByData()
+        //database.asteroidDao().getAsteroidListOrderByData()
 
     suspend fun updateImageOfDay() {
-        _neoWsService.fetchPictureOfDay()?.let {
+
+        neoWsService.fetchPictureOfDay()?.let {
             _pictureOfDay.value = PictureOfDay(
                 it.mediaType,
                 it.title,
                 it.url
             )
         }
+
     }
 
     suspend fun updateAsteroidsPast24Hrs() {
@@ -38,31 +46,25 @@ class MainRepository {
 
     suspend fun updateAsteroidsByDateRange(startDate: Date, endDate: Date) {
         val formatter = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-        val startDate = formatter.format(startDate)
-        val endDate = formatter.format(endDate)
-        println("*** start = $startDate | end = $endDate")
+        val startDateFormatted = formatter.format(startDate)
+        val endDateFormatted = formatter.format(endDate)
+        println("*** start = $startDateFormatted | end = $endDateFormatted")
+        println("*** asteroids : ${asteroids.value}")
 
-        _asteroids.value = mutableListOf<Asteroid>().apply {
-            _neoWsService.fetchAsteroidList(
-                startDate, endDate
-            )?.apply {
-                nearEarthObjects.flatMap { entry ->
-                    entry.value.map {
-                        Asteroid(
-                            it.id,
-                            it.codename,
-                            entry.key,
-                            it.absoluteMagnitude,
-                            it.estimatedDiameter.kilometers,
-                            it.closeApproach.relativeVelocity,
-                            it.closeApproach.distanceFromEarth,
-                            it.isPotentiallyHazardous
-                        )
-                    }
-                }.let {
-                    addAll(it)
-                }
+
+
+
+            val asteroidsWrapper = neoWsService.fetchAsteroidList(
+                startDateFormatted, endDateFormatted
+            )
+            println("*** fetched =  ${asteroidsWrapper?.asDomainModel()}")
+
+
+            asteroidsWrapper?.let {
+                database.asteroidDao().insertAll(listOf())
+            //database.asteroidDao().insertAll(asteroidsWrapper.asDomainModel())
             }
-        }
+
+
     }
 }

@@ -1,4 +1,4 @@
-package com.udacity.asteroidradar.main
+package com.udacity.asteroidradar.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,15 +11,23 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.main.MainViewModel
 
 class MainFragment : Fragment(), MenuProvider {
 
-    private val viewModel : MainViewModel by viewModels()
+    //private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(requireActivity().application)
+        )[MainViewModel::class.java]
+    }
 
-    private lateinit var asteroidAdapter : AsteroidAdapter
+    private lateinit var asteroidAdapter: AsteroidAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

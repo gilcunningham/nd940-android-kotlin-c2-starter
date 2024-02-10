@@ -1,4 +1,4 @@
-package com.udacity.asteroidradar.api.entity
+package com.udacity.asteroidradar.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
