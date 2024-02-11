@@ -34,8 +34,8 @@ abstract class AsteroidDatabase : RoomDatabase() {
 
 @Dao
 interface AsteroidDao {
-    @Query("SELECT * FROM asteroid_table") //" ORDER by closeApproachDate DESC")
-    fun getAsteroidListOrderByData(): LiveData<List<Asteroid>>
+    @Query("SELECT * FROM asteroid_table ORDER by closeApproachDate DESC")
+    fun getAsteroidListOrderByDate(): LiveData<List<Asteroid>>
 
     //TODO strategy
     @Insert(onConflict = OnConflictStrategy.REPLACE)
