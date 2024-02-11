@@ -12,14 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 import com.udacity.asteroidradar.main.MainViewModel
+import kotlinx.coroutines.launch
 
-class MainFragment : Fragment(), MenuProvider {
+class MainFragment : Fragment() {
 
-    //private val viewModel : MainViewModel by viewModels()
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(
             this,
@@ -31,8 +33,12 @@ class MainFragment : Fragment(), MenuProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().addMenuProvider(this, this, Lifecycle.State.RESUMED)
         asteroidAdapter = AsteroidAdapter(viewModel.asteroidListClickListener)
+        lifecycleScope.launch {
+            viewModel.selectedAsteroid.collect { asteroid ->
+                findNavController().navigate(MainFragmentDirections.actionShowDetail(asteroid))
+            }
+        }
     }
 
     override fun onCreateView(
@@ -46,20 +52,11 @@ class MainFragment : Fragment(), MenuProvider {
         asteroidRecycler.adapter = asteroidAdapter
     }.root
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.main_overflow_menu, menu)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.asteroids.observe(viewLifecycleOwner) { asteroids ->
             asteroids?.let {
                 asteroidAdapter.submitList(asteroids)
             }
         }
-    }
-
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-
-        return true
     }
 }
