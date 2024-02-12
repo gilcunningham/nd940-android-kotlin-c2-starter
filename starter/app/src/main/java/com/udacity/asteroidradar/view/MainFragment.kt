@@ -13,12 +13,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.main.AsteroidDatabase
 import com.udacity.asteroidradar.main.MainViewModel
+import com.udacity.asteroidradar.model.RefreshAsteroids
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainFragment : Fragment() {
 
@@ -39,6 +44,22 @@ class MainFragment : Fragment() {
                 findNavController().navigate(MainFragmentDirections.actionShowDetail(asteroid))
             }
         }
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val dao = AsteroidDatabase.getInstance(requireActivity()).refreshAsteroidsDao()
+                val refresh = dao.getRefreshAsteroids()
+                println("*** REFRESH $refresh")
+                if (refresh != null) {
+                    println("*** TEST ${refresh.count }")
+                }
+                else {
+                    println("*** refresh == null")
+                }
+
+            }
+        }
+
     }
 
     override fun onCreateView(

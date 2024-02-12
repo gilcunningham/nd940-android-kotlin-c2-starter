@@ -6,7 +6,6 @@ import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.Constants.BASE_URL
 import com.udacity.asteroidradar.entity.AsteroidWrapperDto
 import com.udacity.asteroidradar.entity.PictureOfDayDto
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -22,20 +21,18 @@ import retrofit2.http.Query
 class NeoWsService {
 
     private val apiKey = BuildConfig.NEO_WS_API_KEY
-    private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    //private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     private val _serviceStatus = MutableSharedFlow<Status>()
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    private val okHttp = OkHttpClient.Builder()
-        .callTimeout(10, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .addNetworkInterceptor(interceptor)
-        .build()
+    //private val okHttp = OkHttpClient.Builder()
+    //    .addNetworkInterceptor(interceptor)
+    //    .build()
     private val moshiRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
-        .client(okHttp)
+    //    .client(okHttp)
         .build()
     private val neoWsApi: NeoWsApi by lazy {
         moshiRetrofit.create(NeoWsApi::class.java)
@@ -75,6 +72,25 @@ class NeoWsService {
         //}
         //null
     }
+
+    /**
+    private suspend fun <T> serviceCall2(
+        serviceDelegate: suspend () -> Response<T>
+    ): T = withContext(Dispatchers.IO) {
+        _serviceStatus.emit(Status.LOADING)
+        // try {
+        //serviceDelegate().apply {
+        //    _serviceStatus.emit(if (isSuccessful) Status.DONE else Status.ERROR)
+        //}.body()
+        //} catch (e: Exception) {
+        //    e.printStackTrace()
+        //    _serviceStatus.emit(Status.ERROR)
+        //}
+        //null
+    }
+    **/
+
+
 
     interface NeoWsApi {
         @GET("/planetary/apod")
