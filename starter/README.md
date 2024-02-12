@@ -2,8 +2,8 @@
 Display a list of asteroids.
 
 ## Getting Started
-Update you project gradle.properties to include your API key.
-This API key can be obtained here https://api.nasa.gov/
+Update you project gradle.properties to include your 'NEO_WS_API_KEY' key.
+This API key can be obtained here https://api.nasa.gov/.
 
 ## Note: Android Kotlin Gradle Update
 Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.properties` file:
