@@ -1,10 +1,18 @@
 package com.udacity.asteroidradar
 
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.udacity.asteroidradar.model.PictureOfDay
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
@@ -31,14 +39,17 @@ fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
 }
 
 @BindingAdapter("pictureOfDay")
-fun bindImageByUrl(imgView: ImageView, imgUrl: String?) {
-    imgUrl?.let {
-        val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+fun bindImageByUrl(imgView: ImageView, pictureOfDay: PictureOfDay?) {
+    pictureOfDay?.let {
+        val context = imgView.context
+        val imgUri = it.url.toUri().buildUpon().scheme("https").build()
         Glide.with(imgView.context)
             .load(imgUri)
             .into(imgView)
+        imgView.contentDescription = context.getString(it.doneLoadingDescriptionRes, it.title)
     }
 }
+
 
 @BindingAdapter("astronomicalUnitText")
 fun bindTextViewToAstronomicalUnit(textView: TextView, number: Double) {
