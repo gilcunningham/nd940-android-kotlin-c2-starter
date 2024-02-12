@@ -1,6 +1,9 @@
 # Purpose of this Folder
+Display a list of asteroids.
 
-This folder should contain the scaffolded project files to get a student started on their project. This repo will be added to the Classroom for students to use, so please do not have any solutions in this folder.
+## Getting Started
+Update you project gradle.properties to include your API key.
+This API key can be obtained here https://api.nasa.gov/
 
 ## Note: Android Kotlin Gradle Update
 Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.properties` file:

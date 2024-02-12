@@ -13,21 +13,14 @@ import java.util.Locale
 
 class MainRepository(private val database: AsteroidDatabase) {
 
-    private val asteroidDao = database.asteroidDao()
     private val neoWsService = NeoWsService()
-    private val _pictureOfDay = MutableLiveData<PictureOfDay>()
+    private val _pictureOfDay = MutableLiveData<PictureOfDay?>()
     val asteroids: LiveData<List<Asteroid>> = database.asteroidDao().getAsteroidListOrderByDate()
-    val pictureOfDay: LiveData<PictureOfDay> = _pictureOfDay
+    val pictureOfDay: LiveData<PictureOfDay?> = _pictureOfDay
     val serviceStatus = neoWsService.serviceStatus
 
     suspend fun refreshImageOfDay() {
         _pictureOfDay.value = neoWsService.fetchPictureOfDay()?.asDomainModel()
-    }
-
-    suspend fun myTest() : LiveData<PictureOfDay> {
-        return MutableLiveData(
-            neoWsService.fetchPictureOfDay()?.asDomainModel()
-        )
     }
 
     suspend fun refreshAsteroidsToday() {

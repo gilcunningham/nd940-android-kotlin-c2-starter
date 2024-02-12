@@ -8,10 +8,13 @@ import com.bumptech.glide.Glide
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
+    val context = imageView.context
     if (isHazardous) {
         imageView.setImageResource(R.drawable.ic_status_potentially_hazardous)
+        imageView.contentDescription = context.getString(R.string.potentially_hazardous_asteroid_image)
     } else {
         imageView.setImageResource(R.drawable.ic_status_normal)
+        imageView.contentDescription = context.getString(R.string.not_hazardous_asteroid_image)
     }
 }
 
@@ -24,15 +27,6 @@ fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
     } else {
         imageView.setImageResource(R.drawable.asteroid_safe)
         imageView.contentDescription = context.getString(R.string.not_hazardous_asteroid_image)
-    }
-}
-
-@BindingAdapter("asteroidStatusImageContentDescription")
-fun bindDetailsStatusImageContentDescription(imageView: ImageView, isHazardous: Boolean) {
-    if (isHazardous) {
-        imageView.setImageResource(R.drawable.asteroid_hazardous)
-    } else {
-        imageView.setImageResource(R.drawable.asteroid_safe)
     }
 }
 

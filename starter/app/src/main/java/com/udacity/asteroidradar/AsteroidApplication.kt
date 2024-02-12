@@ -8,7 +8,6 @@ class AsteroidApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        println("*** HI")
         Timber.plant(Timber.DebugTree())
         setupWorkers(applicationContext)
     }
