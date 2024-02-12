@@ -16,6 +16,7 @@ buildscript {
         version_appcompat = "1.6.1"
         version_moshi = "1.9.3"
         version_glide = "4.14.2"
+        version_timber = "5.0.1"
     }
 
     repositories {

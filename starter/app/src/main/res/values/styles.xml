@@ -8,8 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="listItemTextAppearance" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="BodyTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="BodyTextAppearanceBold" parent="BodyTextAppearance">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HeaderTextAppearance" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/header_background</item>
     </style>
 
 </resources>

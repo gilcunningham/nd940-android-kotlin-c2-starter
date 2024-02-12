@@ -35,12 +35,9 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/HeaderTextAppearance"
                 android:padding="16dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="20sp"
                 android:layout_gravity="bottom"
-                android:background="#55010613"
                 android:text="@{viewModel.imageOfDayText}" />
         </FrameLayout>
 
