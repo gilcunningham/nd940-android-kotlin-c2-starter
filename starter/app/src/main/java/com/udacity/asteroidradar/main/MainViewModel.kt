@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.R
@@ -21,10 +22,10 @@ class MainViewModel(private val repo: MainRepository) : ViewModel() {
         refreshAsteroids()
     }
 
-    private val _imageOfDayText = MutableLiveData(R.string.main_image_of_the_day_loading )
+    private val _imageOfDayText = MutableLiveData(R.string.main_image_of_the_day_loading)
     private val _progressBarVisibility = MutableLiveData(View.VISIBLE)
     private val _selectedAsteroid = MutableSharedFlow<Asteroid>()
-    val asteroids = repo.asteroids.map { it }
+    var asteroids = repo.asteroids
     val asteroidListClickListener = object : AsteroidAdapter.OnClickListener {
         override fun onClick(asteroid: Asteroid) {
             viewModelScope.launch {
@@ -32,10 +33,17 @@ class MainViewModel(private val repo: MainRepository) : ViewModel() {
             }
         }
     }
+    val filteredAsteroids = repo.filteredAsteroids.asLiveData()
     val imageOfDayText = _imageOfDayText.map { it }
     val pictureOfDay = repo.pictureOfDay.map { it }
     val progressBarVisibility = _progressBarVisibility.map { it }
     val selectedAsteroid = _selectedAsteroid.asSharedFlow()
+
+    fun showAllAsteroids() {
+        viewModelScope.launch {
+            repo.filterNoneAsteroids()
+        }
+    }
 
     private fun refreshAsteroids() {
         viewModelScope.launch {
@@ -48,6 +56,18 @@ class MainViewModel(private val repo: MainRepository) : ViewModel() {
         viewModelScope.launch {
             repo.refreshImageOfDay()
             _imageOfDayText.value = R.string.main_image_of_the_day
+        }
+    }
+
+    fun showThisWeeksAsteroids() {
+        viewModelScope.launch {
+            repo.filterThisWeeksAsteroids()
+        }
+    }
+
+    fun showTodaysAsteroids() {
+        viewModelScope.launch {
+            repo.filterTodaysAsteroids()
         }
     }
 

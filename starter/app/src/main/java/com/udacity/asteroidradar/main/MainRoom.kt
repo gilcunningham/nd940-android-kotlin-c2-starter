@@ -10,13 +10,10 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.udacity.asteroidradar.model.Asteroid
-import com.udacity.asteroidradar.model.RefreshAsteroids
 
-@Database(entities = [Asteroid::class, RefreshAsteroids::class], version = 1, exportSchema = false)
+@Database(entities = [Asteroid::class], version = 1, exportSchema = false)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract fun asteroidDao() : AsteroidDao
-
-    abstract fun refreshAsteroidsDao() : RefreshAsteroidsDao
 
     companion object {
         private const val DATABASE_NAME = "asteroids-db"
@@ -42,15 +39,6 @@ interface AsteroidDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(asteroids: List<Asteroid>)
-}
-
-@Dao
-interface RefreshAsteroidsDao {
-    @Query("SELECT * FROM refresh_table")
-    fun getRefreshAsteroids() : RefreshAsteroids
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(refreshAsteroid: RefreshAsteroids)
 }
 
 
