@@ -8,10 +8,9 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.Constants.DEFAULT_END_DATE_DAYS
 import com.udacity.asteroidradar.main.AsteroidDatabase
 import com.udacity.asteroidradar.main.MainRepository
-import com.udacity.asteroidradar.model.RefreshAsteroids
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,15 +28,8 @@ private val repeatingRequest =
         .setConstraints(constraints)
         .build()
 
-private suspend fun initializeRefreshAsteroids(applicationContext: Context) {
-    val database = AsteroidDatabase.getInstance(applicationContext)
-    val refreshDao = database.refreshAsteroidsDao()
-    refreshDao.insert(RefreshAsteroids(count = 0))
-}
-
 fun setupWorkers(applicationContext: Context) {
     CoroutineScope(Dispatchers.Default).launch {
-        initializeRefreshAsteroids(applicationContext)
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             RefreshAsteroidWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.UPDATE,
@@ -50,23 +42,10 @@ class RefreshAsteroidWorker(
     context: Context, userParameters: WorkerParameters
 ) : CoroutineWorker(context, userParameters) {
     override suspend fun doWork(): Result {
-        val database = AsteroidDatabase.getInstance(applicationContext)
-        val refreshAsteroidsDao = database.refreshAsteroidsDao()
-        val refreshAsteroids = refreshAsteroidsDao.getRefreshAsteroids()
-        Timber.d("refresh count: ${refreshAsteroids.count}")
-
-        if (Constants.DEFAULT_END_DATE_DAYS <= refreshAsteroids.count) {
-            Timber.d("refresh count exceeded ${Constants.DEFAULT_END_DATE_DAYS}, cancelling work")
-            WorkManager.getInstance(applicationContext).cancelUniqueWork(WORK_NAME)
-            return Result.success()
-        }
-
         return try {
             Timber.d("do work")
-            MainRepository(database).refreshAsteroidsToday()
-            refreshAsteroidsDao.insert(
-                refreshAsteroids.apply { count++ }
-            )
+            val database = AsteroidDatabase.getInstance(applicationContext)
+            MainRepository(database).fetchAsteroidsForNextNumberOfDays(DEFAULT_END_DATE_DAYS)
             Result.success()
         } catch (e: HttpException) {
             Result.retry()

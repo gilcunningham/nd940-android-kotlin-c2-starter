@@ -2,18 +2,24 @@ package com.udacity.asteroidradar.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 import com.udacity.asteroidradar.main.MainViewModel
 import kotlinx.coroutines.launch
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), MenuProvider {
 
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(
@@ -32,6 +38,11 @@ class MainFragment : Fragment() {
                 findNavController().navigate(MainFragmentDirections.actionShowDetail(asteroid))
             }
         }
+        requireActivity().addMenuProvider(this, this, Lifecycle.State.RESUMED)
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.main_overflow_menu, menu)
     }
 
     override fun onCreateView(
@@ -48,8 +59,31 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.asteroids.observe(viewLifecycleOwner) { asteroids ->
             asteroids?.let {
-                asteroidAdapter.submitList(asteroids)
+                asteroidAdapter.submitList(it)
             }
         }
+        viewModel.filteredAsteroids.observe(viewLifecycleOwner) { asteroids ->
+            asteroidAdapter.submitList(asteroids)
+        }
     }
+
+    override fun onMenuItemSelected(menuItem: MenuItem) =
+        when (menuItem.itemId) {
+            R.id.show_all -> {
+                viewModel.showAllAsteroids()
+                true
+            }
+
+            R.id.show_this_week -> {
+                viewModel.showThisWeeksAsteroids()
+                true
+            }
+
+            R.id.show_today -> {
+                viewModel.showTodaysAsteroids()
+                true
+            }
+
+            else -> false
+        }
 }
